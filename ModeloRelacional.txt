@@ -1,0 +1,68 @@
+Modelo Relacional TP1
+
+cliente (nif, nome, morada, telefone, referenciador, apagado)
+PK = nif
+FK = referenciador ref. cliente_particular.id_cliente
+R.I.:
+- referenciador -> Opcional
+- Na app remover um utilizador não leva à sua remoção da base de dados. 
+  Apenas colocar 'apagado' = true
+- Quando, na app, o cliente é apagado fazer apagado=true ao invés de remover o tuplo
+
+cliente_particular (id_cliente, cc)
+FK = id_cliente ref. cliente.nif
+R.I.:
+- Cliente particular tem no máximo 3 veículos (1-3)
+
+cliente_institucional (id_cliente, nome_de_contacto)
+FK = id_cliente ref. cliente.nif
+
+veiculo (matricula, nome, telefone_condutor, estado_gps, num_alarmes, id_cliente, id_gps)
+PK = matricula
+FK = id_cliente ref. cliente.nif  -- Cliente ao qual o veículo pertence
+FK = id_gps ref. gps.id
+R.I.:
+- telefone_condutor -> Opcional
+- O estado do equipamento é multivalor e pode ser: Activo, PausaDeAlarmes, Inactivo.
+  Os estados podem ser geridos (adicionar/remover/editar) pela aplicação
+- 'num_alarmes' é recalculado quando é gerado um novo alarme
+
+gps (id)
+PK = id
+
+zona_verde (id, longitude, latitude, raio, id_veiculo)
+PK = id
+FK = id_veiculo ref. veiculo.matricula
+
+registo (id, longitude, latitude, marca_temporal, id_gps)
+PK = id
+FK = id_gps ref. gps.id
+R.I.:
+- A cada 10s é emitido um registo a partir de um equipamento GPS
+- Quando as coordenadas de um registo para um 'id_gps'(atribuido a um único veículo) saem
+  das coordenadas de alguma das 'zonas verdes' associadas a esse veiculo gerar um 'alarme'
+- Quando é criado um registo ele fica nesta tabela e também em 'registo_n_proc'
+
+registo_n_proc (id, id_registo)
+PK = id
+FK = id_registo ref, registo.id
+- A cada 5 mins passar todos para a tabela 'registo_proc' caso esteja tudo bem. 
+  Caso alguma das seguintes condições se verifique o registo vai para 'registo_invalido'
+	> id não existente na tabela 'registo'
+	> data('marca_temporal') a null
+	> latitude a null
+	> longitude a null
+
+registo_proc (id, id_registo)
+PK = id
+FK = id_registo ref, registo.id
+
+registo_invalido (id, id_registo)
+PK = id
+R.I.:
+- Registos aqui inseridos são removidos ao fim de 15 dias
+
+alarme (id, id_registo, id_veiculo)
+PK = id
+FK = id_registo ref, registo.id
+FK = id_veiculo ref. veiculo.matricula
