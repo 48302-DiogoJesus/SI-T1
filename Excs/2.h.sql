@@ -1,10 +1,5 @@
 drop procedure create_veiculo;
 
-call create_veiculo(
-	'AB-23-PD', '111111111', 1001, 'Activo', 'Henrique', '999999999', 0,
-	'-23.3457', '-90.2354', 20
-);
-
 create or replace procedure create_veiculo(
 	-- Veículo
 	matricula char(8), i_id_cliente char(9), id_gps int, estado_gps varchar(20),
@@ -17,31 +12,10 @@ as
 $$
 	declare
 		n_of_veiculos_cp bigint;
+		error_msg text;
+		error_sqlstate text;
 	begin
-	    -- Verificar cliente existe
-		if
-			(select count(*) from cliente where cliente.nif = i_id_cliente) is null 
-		then
-			raise notice 'Cliente não existente';
-			return;
-		end if;
-	
-		-- Verificar se estado gps existe
-		if
-			(select count(*) from estados_gps where estado = estado_gps) is null 
-		then
-			raise notice 'Estado de GPS inválido';
-			return;
-		end if;
-	
-		-- Verificar se gps existe
-		if
-			(select count(*) from gps where id = id_gps) is null 
-		then
-			raise notice 'GPS inexistente';
-			return;
-		end if;
-	
+		raise notice ''; -- newline
 	    -- Tipo de cliente: particular máx 3
 		if
 			(select count(*) from cliente_particular as cp where cp.id_cliente = i_id_cliente) is not null
@@ -76,5 +50,29 @@ $$
 		values(matricula, longitude, latitude, raio);
 	
 		raise notice 'Zona Verde criada com sucesso! Veículo criado com sucesso!';
+	
+	exception
+		when others then
+			get stacked diagnostics error_msg = MESSAGE_TEXT,
+									error_sqlstate = RETURNED_SQLSTATE;
+								
+		raise notice 'ERROR HAPPENED';
+		raise notice 'Error SQLState: %', error_sqlstate;
+		raise notice 'Error Message: %', error_msg;
 	end;
 $$;
+
+/* TESTES */
+
+-- Valid Usage. Creates a 'veiculo' + 'zona verde'
+call create_veiculo(
+	'AB-23-AA', '111111111', 1001, 'Activo', 'Henrique', '999999999', 0,
+	'-23.3457', '-90.2354', 20
+);
+
+-- Valid usage. Creates a 'veiculo' only
+call create_veiculo(
+	'AB-23-AB', '111111111', 1001, 'Activo', 'Henrique', '999999999', 0
+);
+
+-- Nota: Zona Verde apenas é criada caso os 3 parâmetros sejam passados

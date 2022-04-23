@@ -1,7 +1,8 @@
 -- FALTAM RESTRIÇÕES NO DOMINO DOS VALORES DOS ATRIBUTOS
 start transaction;
 	create table if not exists gps(
-		id serial,
+		-- PK
+		id int,
 		
 		primary key(id)
 	);
@@ -23,28 +24,21 @@ start transaction;
 	
 	create table if not exists cliente_particular(
 		-- PK
-		id serial,
-		-- FK
 		id_cliente char(9) not null,
 		-- ATTRS
 		cc char(12) not null ,
 		
-		primary key(id),
-		foreign key (id_cliente) references cliente(nif) on delete cascade
-		
+		primary key(id_cliente)
 	);
 
 	create table if not exists cliente_institucional(
 		-- PK
-		id serial,
-		-- FK
 		id_cliente char(9) not null,
 		-- ATTRS
 		nome_de_contacto varchar(30) not null check(length(nome_de_contacto) >= 8),
 		
-		primary key(id),
-		foreign key (id_cliente) references cliente(nif) 
-	);
+		primary key(id_cliente)
+);
 
 	-- Table containing all possible GPS states
 	create table if not exists estados_gps(
@@ -100,33 +94,24 @@ start transaction;
 
 	create table if not exists registo_n_proc(
 		-- PK
-		id serial,
-		-- FK
-		id_registo int not null,
+		id_registo int,
 		
-		primary key(id),
-		foreign key (id_registo) references registo(id)
+		primary key(id_registo)
 	);
 
 
 	create table if not exists registo_proc(
 		-- PK
-		id serial,
-		-- FK
-		id_registo int not null,
+		id_registo int,
 		
-		primary key(id),
-		foreign key (id_registo) references registo(id)
-	);
+		primary key(id_registo)
+);
 
 	create table if not exists registo_invalido(
 		-- PK
-		id serial,
-		-- FK
-		id_registo int not null,
+		id_registo int,
 		
-		primary key(id),
-		foreign key (id_registo) references registo(id)
+		primary key(id_registo)
 	);
 
 	create table if not exists alarme(

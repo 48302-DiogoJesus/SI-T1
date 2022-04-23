@@ -21,7 +21,7 @@ $$
 				((i_veiculo is null) or i_veiculo = v.matricula) and -- License Plate Match 
 				extract (year from r.marca_temporal) = i_year -- Year match
 			group by
-				v.matricula, r.marca_temporal
+				v.matricula, (extract (year from r.marca_temporal))::int
 			order by
 				count(v.matricula) desc;
 	end;
@@ -35,7 +35,7 @@ $$
 	declare
 		n_of_alarmes bigint;
 	begin
-		select 
+		select
 			count(*) into n_of_alarmes
 		from
 			alarme a, registo r, veiculo v
