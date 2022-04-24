@@ -28,7 +28,8 @@ start transaction;
 		-- ATTRS
 		cc char(12) not null ,
 		
-		primary key(id_cliente)
+		primary key(id_cliente),
+		foreign key(id_cliente) references cliente(nif)
 	);
 
 	create table if not exists cliente_institucional(
@@ -37,7 +38,8 @@ start transaction;
 		-- ATTRS
 		nome_de_contacto varchar(30) not null check(length(nome_de_contacto) >= 8),
 		
-		primary key(id_cliente)
+		primary key(id_cliente),
+		foreign key(id_cliente) references cliente(nif)
 );
 
 	-- Table containing all possible GPS states
@@ -96,7 +98,8 @@ start transaction;
 		-- PK
 		id_registo int,
 		
-		primary key(id_registo)
+		primary key(id_registo),
+		foreign key(id_registo) references registo(id)
 	);
 
 
@@ -104,14 +107,16 @@ start transaction;
 		-- PK
 		id_registo int,
 		
-		primary key(id_registo)
+		primary key(id_registo),
+		foreign key(id_registo) references registo(id)
 );
 
 	create table if not exists registo_invalido(
 		-- PK
 		id_registo int,
 		
-		primary key(id_registo)
+		primary key(id_registo),
+		foreign key(id_registo) references registo(id)
 	);
 
 	create table if not exists alarme(

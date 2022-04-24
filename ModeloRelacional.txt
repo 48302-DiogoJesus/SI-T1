@@ -10,16 +10,19 @@ R.I.:
 - Quando, na app, o cliente é apagado fazer apagado=true ao invés de remover o tuplo
 
 cliente_particular (id_cliente, cc)
+PK = id_cliente
 FK = id_cliente ref. cliente.nif
 R.I.:
 - Cliente particular tem no máximo 3 veículos (1-3)
 
 cliente_institucional (id_cliente, nome_de_contacto)
+PK = id_cliente
 FK = id_cliente ref. cliente.nif
 
-veiculo (matricula, nome, telefone_condutor, estado_gps, num_alarmes, id_cliente, id_gps)
+veiculo (matricula, nome_condutor, telefone_condutor, estado_gps, num_alarmes, id_cliente, id_gps)
 PK = matricula
 FK = id_cliente ref. cliente.nif  -- Cliente ao qual o veículo pertence
+FK = estado_gps ref. estados_gps.estado
 FK = id_gps ref. gps.id
 R.I.:
 - telefone_condutor -> Opcional
@@ -43,8 +46,8 @@ R.I.:
   das coordenadas de alguma das 'zonas verdes' associadas a esse veiculo gerar um 'alarme'
 - Quando é criado um registo ele fica nesta tabela e também em 'registo_n_proc'
 
-registo_n_proc (id, id_registo)
-PK = id
+registo_n_proc (id_registo)
+PK = id_registo
 FK = id_registo ref, registo.id
 - A cada 5 mins passar todos para a tabela 'registo_proc' caso esteja tudo bem. 
   Caso alguma das seguintes condições se verifique o registo vai para 'registo_invalido'
@@ -54,11 +57,12 @@ FK = id_registo ref, registo.id
 	> longitude a null
 
 registo_proc (id, id_registo)
-PK = id
+PK = id_registo
 FK = id_registo ref, registo.id
 
-registo_invalido (id, id_registo)
-PK = id
+registo_invalido (id_registo)
+PK = id_registo
+FK = id_registo ref, registo.id
 R.I.:
 - Registos aqui inseridos são removidos ao fim de 15 dias
 
