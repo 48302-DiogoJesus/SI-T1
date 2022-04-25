@@ -1,3 +1,8 @@
+/*
+ * 2.i)
+ * Criar uma vista, que liste todos os alarmes. A vista deve apresentar a matrícula do veículo, o
+ * nome do condutor, as coordenadas e a data/hora do alarme;
+ * */
 
 drop view list_all_alarmes;
 

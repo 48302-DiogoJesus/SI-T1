@@ -1,3 +1,12 @@
+/*
+ * 2.h)
+ * Desenvolver um procedimento que crie um veículo com a respectiva informação do
+ * equipamento associado, e que o associe a um cliente. Caso sejam passados dados para a
+ * criação de uma zona verde, deve criar e associar o veículo a essa zona. Reutilize
+ * procedimentos já existentes ou crie novos se necessário; Deve garantir as restrições de
+ * negócio respectivas, nomeadamente a limitação do número de veículos
+ * */
+
 drop procedure create_veiculo;
 
 create or replace procedure create_veiculo(

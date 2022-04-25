@@ -1,3 +1,11 @@
+/*
+ * 2.d)
+ * Criar os mecanismos que permitam:
+ * - inserir cliente particular
+ * - atualizar cliente particular (CC, NIF, nome, morada, cliente que o referenciou); 
+ * - remover cliente particular
+ * */
+
 -- alter sequence {tablename}_{columnname}_seq restart with 1;
 
 -- INSERT CLIENTE PARTICULAR

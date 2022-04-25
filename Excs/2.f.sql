@@ -1,4 +1,13 @@
-drop procedure handle_registos;
+/*
+ * 2.f)
+ * Criar um procedimento que será chamado de forma periódica e que processa todos os
+ * registos não processados até esse momento. Deve tratar todos os registos existentes na
+ * tabela de registos não processados, de forma a copiar os dados para a tabela de registos
+ * processados ou de registos inválidos e remover as entradas tratadas. Deve garantir que
+ * processa todas as entradas não processadas até esse momento
+ * */
+
+drop procedure if exists handle_registos;
 
 create or replace procedure handle_registos()
 as
