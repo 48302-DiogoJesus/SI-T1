@@ -15,14 +15,20 @@ create or replace procedure insert_cliente_particular(i_nif char(9), i_cc char(1
 language plpgsql
 As
 $$
-begin
-  if (select txid_current_if_assigned()) is not null then
-      rollback;
-  end if;
-  insert into cliente(nif, referenciador, nome, morada, telefone) values(i_nif, i_ref_client, i_nome, i_morada, i_telefone);
-  insert into cliente_particular (id_cliente, cc) values(i_nif, i_cc);
-
-end;$$;
+	begin
+		
+	  insert into cliente(nif, referenciador, nome, morada, telefone) values(i_nif, i_ref_client, i_nome, i_morada, i_telefone);
+	  insert into cliente_particular (id_cliente, cc) values(i_nif, i_cc);
+	exception
+		when others then
+			get stacked diagnostics error_msg = MESSAGE_TEXT,
+									error_sqlstate = RETURNED_SQLSTATE;
+								
+		raise notice 'ERROR HAPPENED';
+		raise notice 'Error SQLState: %', error_sqlstate;
+		raise notice 'Error Message: %', error_msg;
+	end;
+$$;
 
 call insert_cliente_particular('555555555', '555555555555', 'Hneiruco Águas', 'Rua das Marmeletes nº 4', '111111111', '555555555');
 
@@ -36,11 +42,7 @@ create or replace procedure update_cliente_particular(i_nif char(9), n_cc char(1
 language plpgsql
 As
 $$
-begin
-  if (select txid_current_if_assigned()) is not null then
-      rollback;
-  end if;
- 
+begin 
   update cliente
   set referenciador = n_ref_client, nome = n_nome, morada = n_morada
   where nif = i_nif;
@@ -48,7 +50,6 @@ begin
   update cliente_particular 
   set cc = n_cc
   where id_cliente = i_nif;
- 
 end;$$;
 
 call update_cliente_particular('555555555', '999999999999', 'Hneiroco Meneses Com S', 'Murada atualizada', null);

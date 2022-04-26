@@ -14,4 +14,4 @@ create or replace view list_all_alarmes as (
 	from
 		alarme as a inner join veiculo as v on a.id_veiculo = v.matricula
 					inner join registo as r	on a.id_registo = r.id
-)
+);

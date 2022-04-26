@@ -35,6 +35,7 @@ before delete on cliente
 for each row
 when (not old.apagado)
 	execute function remove_client();
+	
 
 -- TESTS --
 
