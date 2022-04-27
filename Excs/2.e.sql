@@ -58,35 +58,4 @@ $$
 	end;
 $$ language plpgsql;
 */
-/* ------------ TESTS ------------ */
-
-/* Count Alarmes returning table */
-
--- From existing car with alarms
-select * from count_alarmes_returns_table(2016, 'JD-23-09');
-
--- From existing car with no alarms
-select * from count_alarmes_returns_table(2016, '03-83-AA');
-
--- All the cars with 'alarmes' of 'registos' from 2016
--- Note: 74-FT-18 has 1 alarm from 2016 + 1 alarm from 2022
-select * from count_alarmes_returns_table(2016); 
-select * from count_alarmes_returns_table(2016, null);
-
--- All the cars with 'alarmes' from 2017 (None)
-select * from count_alarmes_returns_table(2017);
-
-/* Count Alarmes */
--- From existing car with alarms
-select * from count_alarmes(2016, 'JD-23-09');
-
--- From existing car with no alarms
-select * from count_alarmes(2016, '03-83-AA');
-
--- All the cars with 'alarmes' of 'registos' from 2016
-select * from count_alarmes(2016);
-select * from count_alarmes(2016, null);
-
--- All the cars with 'alarmes' from 2017 (None)
-select * from count_alarmes(2017);
 

@@ -23,7 +23,7 @@ $$
 			apagado bool 		default false not null,
 			
 			primary key(nif),
-			constraint referenciador_fk foreign key (referenciador) references cliente(nif) deferrable 
+			constraint referenciador_fk foreign key (referenciador) references cliente(nif) on delete set null deferrable
 		);
 		
 		create table if not exists cliente_particular(
@@ -33,7 +33,7 @@ $$
 			cc char(12) not null,
 			
 			primary key(id_cliente),
-			foreign key(id_cliente) references cliente(nif)
+			foreign key(id_cliente) references cliente(nif) on delete cascade
 		);
 	
 		create table if not exists cliente_institucional(
@@ -42,8 +42,8 @@ $$
 			-- ATTRS
 			nome_de_contacto varchar(30) not null check(length(nome_de_contacto) >= 8),
 			
-			primary key(id_cliente),
-			foreign key(id_cliente) references cliente(nif)
+			primary key (id_cliente),
+			foreign key (id_cliente) references cliente(nif) on delete cascade
 		);
 	
 		-- Table containing all possible GPS states
@@ -64,8 +64,8 @@ $$
 			telefone_condutor char(9) check(telefone_condutor similar to '[0-9]{9}'),
 			num_alarmes int not null default 0,
 			
-			primary key(matricula),
-			foreign key(estado_gps) references estados_gps(estado),
+			primary key (matricula),
+			foreign key (estado_gps) references estados_gps(estado),
 			foreign key (id_cliente) references cliente(nif),
 			foreign key (id_gps) references gps(id)
 		);
@@ -81,7 +81,7 @@ $$
 			raio int not null check (raio > 0),
 			
 			primary key(id),
-			foreign key (id_veiculo) references veiculo(matricula)
+			foreign key (id_veiculo) references veiculo(matricula) on delete cascade
 		);
 	
 		create table if not exists registo(
@@ -103,7 +103,7 @@ $$
 			id_registo int,
 			
 			primary key(id_registo),
-			foreign key(id_registo) references registo(id)
+			foreign key(id_registo) references registo(id) on delete cascade
 		);
 	
 	
@@ -112,7 +112,7 @@ $$
 			id_registo int,
 			
 			primary key(id_registo),
-			foreign key(id_registo) references registo(id)
+			foreign key(id_registo) references registo(id) on delete cascade
 		);
 	
 		create table if not exists registo_invalido(
@@ -120,7 +120,7 @@ $$
 			id_registo int,
 			
 			primary key(id_registo),
-			foreign key(id_registo) references registo(id)
+			foreign key(id_registo) references registo(id) on delete cascade
 		);
 	
 		create table if not exists alarme(

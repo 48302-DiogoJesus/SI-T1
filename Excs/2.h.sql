@@ -71,17 +71,4 @@ $$
 	end;
 $$;
 
-/* TESTES */
-
--- Valid Usage. Creates a 'veiculo' + 'zona verde'
-call create_veiculo(
-	'AB-23-AA', '111111111', 1001, 'Activo', 'Henrique', '999999999', 0,
-	'-23.3457', '-90.2354', 20
-);
-
--- Valid usage. Creates a 'veiculo' only
-call create_veiculo(
-	'AB-23-AB', '111111111', 1001, 'Activo', 'Henrique', '999999999', 0
-);
-
 -- Nota: Zona Verde apenas é criada caso os 3 parâmetros sejam passados

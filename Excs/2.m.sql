@@ -32,8 +32,3 @@ create or replace trigger increment_alarm_count
 after insert on alarme
 for each row
 execute function increment_alarm_count();
-
--- TESTING --
-
--- Create the trigger after creating the tables and before inserting the default values
--- or add a new alarm and check if 'num_alarmes' incremented on the target 'veiculo'

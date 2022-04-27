@@ -47,5 +47,3 @@ $$
 		end loop;
 	end;
 $$ language plpgsql;
-
-call handle_registos();

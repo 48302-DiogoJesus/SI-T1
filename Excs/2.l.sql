@@ -35,9 +35,3 @@ before delete on cliente
 for each row
 when (not old.apagado)
 	execute function remove_client();
-	
-
--- TESTS --
-
-delete from cliente where nif = '111111111';
-delete from cliente where nif = '222222222';
