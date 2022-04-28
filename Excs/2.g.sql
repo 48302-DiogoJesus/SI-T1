@@ -48,7 +48,7 @@ $$
 	            (select estado_gps from veiculo where veiculo.matricula = veiculo_id) = 'PausaDeAlarmes'
             )
         then 
-            insert into alarme(id_registo, id_veiculo) values(new.id_registo, id_veiculo);
+            insert into alarme(id_registo, id_veiculo) values(new.id_registo, veiculo_id);
         end if;
         
         return new;

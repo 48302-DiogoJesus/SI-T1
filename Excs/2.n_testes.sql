@@ -256,7 +256,7 @@ $$
 				-- Action
 				call handle_registos();
 				if
-					(select count(*) from list_all_alarmes) = 4
+					(select count(*) from list_all_alarmes) = 6
 				then
 					testResult = 'OK';
 				else
@@ -340,7 +340,10 @@ $$
 					'AB-23-AA', '111111111', 1001, 'Activo', 'Henrique', '999999999', 0,
 					'-23.3457', '-90.2354', 20
 				);
+				
 				-- USAR 2.J) PARA CRIAR UM REGISTO COM O ID DO VEICULO E MARCÁ-LO COMO ALARME
+				insert into list_all_alarmes values('AB-23-AA', 'Henrique', '-23.3233', '12.2382', '2016-06-22 19:10:25-03');	
+			
 				if 
 					(select num_alarmes from veiculo where matricula = 'AB-23-AA') = 1
 				then
