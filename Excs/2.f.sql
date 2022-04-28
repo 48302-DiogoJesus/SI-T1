@@ -19,7 +19,7 @@ $$
 		curr_latitude varchar(20);
 		curr_marca_temporal timestamp;
 	begin
-		for curr_registo_n_proc in (select id_registo from registo_n_proc) loop
+		for curr_registo_n_proc in (select id_registo from registo_n_proc for share) loop
 			-- Gather column values
 			select 
 				id_gps, longitude, latitude, marca_temporal
@@ -27,7 +27,8 @@ $$
 				curr_id_gps, curr_longitude, curr_latitude, curr_marca_temporal
 			from
 				registo
-			where registo.id = curr_registo_n_proc.id_registo;
+			where registo.id = curr_registo_n_proc.id_registo
+			for share;
 		
 			-- Choose where to transfer the 'registo'
 			if 

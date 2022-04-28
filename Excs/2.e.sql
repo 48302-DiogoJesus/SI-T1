@@ -11,7 +11,7 @@ create or replace function count_alarmes_returns_table(i_year int, i_veiculo cha
 returns table (
 	veiculo char(8),
 	n_of_alarmes bigint
-) as 
+) as
 $$
 	begin
 		return query select 

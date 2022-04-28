@@ -19,6 +19,8 @@ $$
 		error_msg text;
 		error_sqlstate text;
 	begin
+	set transaction isolation level serializable; 
+	-- to deny attempts to delete referenciador from cliente table
 		
 	  insert into cliente(nif, referenciador, nome, morada, telefone) values(i_nif, i_ref_client, i_nome, i_morada, i_telefone);
 	  insert into cliente_particular (id_cliente, cc) values(i_nif, i_cc);
@@ -43,15 +45,19 @@ create or replace procedure update_cliente_particular(i_nif char(9), n_cc char(1
 language plpgsql
 As
 $$
-begin 
-  update cliente
-  set referenciador = n_ref_client, nome = n_nome, morada = n_morada
-  where nif = i_nif;
- 
-  update cliente_particular 
-  set cc = n_cc
-  where id_cliente = i_nif;
-end;$$;
+	begin 
+	set transaction isolation level serializable;
+	-- to deny attempts to delete referenciador from cliente table
+
+	  update cliente
+	  set referenciador = n_ref_client, nome = n_nome, morada = n_morada
+	  where nif = i_nif;
+	 
+	  update cliente_particular 
+	  set cc = n_cc
+	  where id_cliente = i_nif;
+	end;
+$$;
 
 
 -- REMOVE CLIENTE PARTICULAR
@@ -62,7 +68,7 @@ language plpgsql
 As
 $$
 begin
-	if (select count(*) from cliente_particular where id_cliente = i_nif) = 0 then
+	if (select count(*) from cliente_particular where id_cliente = i_nif for update) = 0 then
 		raise notice 'Cliente Particular não encontrado!';
 		return;
 	end if;

@@ -26,7 +26,7 @@ $$
 	   		nome_condutor = new.nome_condutor
 	   	) = 0
    		then	
-	   		raise notice 'O veiculo com a matricula % não se encontra na tabela veiculo ou o nome do condutor para o veículo não está correto!', new.matricula;
+	   		raise exception 'O veiculo com a matricula % não se encontra na tabela veiculo ou o nome do condutor para o veículo não está correto!', new.matricula;
 	   		return null;
 	   	end if;
 	   
