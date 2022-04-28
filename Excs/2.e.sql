@@ -5,7 +5,7 @@
  * de alarmes para todos os veículos nesse ano
  * */
 
-drop function count_alarmes_returns_table;
+drop function if exists count_alarmes_returns_table;
 
 create or replace function count_alarmes_returns_table(i_year int, i_veiculo char(8) default null)
 returns table (

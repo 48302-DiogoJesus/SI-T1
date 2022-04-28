@@ -6,34 +6,49 @@
  
 -- RULE PROCEDURE --
 
-drop rule if exists list_alarmes_and_registos on alarme;
-drop function if exists add_alarm_and_registo;
+drop trigger if exists add_to_list_alarme_and_registo on list_all_alarmes;
+drop function if exists add_alarme_and_registo;
 
-create or replace function add_alarm_and_registo()
+create or replace function add_alarme_and_registo()
 returns trigger
 language plpgsql
 as
 $$
-    declare id_registo int;
-    declare id_gps int;
-
+    declare 
+   		registo_id int;
+    	gps_id int;
     begin
 
-        select e.id_gps into id_gps from veiculo e where e.matricula = new.matricula;
-
+	   	if 
+	   	(
+	   		select count(*) from veiculo where 
+	   		matricula = new.matricula and
+	   		nome_condutor = new.nome_condutor
+	   	) = 0
+   		then	
+	   		raise notice 'O veiculo com a matricula % não se encontra na tabela veiculo ou o nome do condutor para o veículo não está correto!', new.matricula;
+	   		return null;
+	   	end if;
+	   
+	    select id_gps into gps_id from veiculo v where v.matricula = new.matricula;
+	   
         insert into registo (id_gps, longitude, latitude, marca_temporal) 
-            values (id_gps ,new.longitude, new.latitude, new.marca_temporal) 
-            returning id_registo;
-
-        insert into alarme (id_registo, id_veiculo) values (id_registo, new.matricula);
-
+            values (gps_id, new.longitude, new.latitude, new.marca_temporal) 
+            returning id into registo_id;
+           
+        insert into alarme (id_registo, id_veiculo) values (registo_id, new.matricula);
+       
         return null;
     end;
 $$;
 
--- RULE --
+-- TRIGGER --
 
-create or replace rule list_alarmes_and_registos as 
-on insert to list_all_alarmes 
-do instead 
-    execute function add_alarm_and_registo();
+create or replace trigger add_to_list_alarme_and_registo
+instead of insert on list_all_alarmes
+for each row
+execute function add_alarme_and_registo();
+
+-- TESTE
+
+insert into list_all_alarmes values('74-FT-18', 'Porsche Caipata', '-23.3233', '12.2382', '2016-06-22 19:10:25-03')

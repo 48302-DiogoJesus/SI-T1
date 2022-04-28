@@ -7,7 +7,7 @@
  * negócio respectivas, nomeadamente a limitação do número de veículos
  * */
 
-drop procedure create_veiculo;
+drop procedure if exists create_veiculo;
 
 create or replace procedure create_veiculo(
 	-- Veículo

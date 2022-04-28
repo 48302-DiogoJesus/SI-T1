@@ -52,5 +52,3 @@ $$
 		
 	end;
 $$;
-
-call remove_reg_invalidos();

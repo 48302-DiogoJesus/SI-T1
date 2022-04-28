@@ -11,7 +11,7 @@
  * false quando for impar;
  * */
 
-drop function if exists analiseRegistu;
+drop function if exists analise_registo;
 
 create or replace function zonaVerdeValida(id_registo int)
 returns boolean

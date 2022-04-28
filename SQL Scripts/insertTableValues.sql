@@ -64,7 +64,7 @@ $$
 		insert into alarme values(3, 3, 'JD-23-09') on conflict do nothing;
 		insert into alarme values(4, 5, 'RT-16-34') on conflict do nothing;
 		
-		alter sequence alarme_id_seq restart with 8;
+		alter sequence alarme_id_seq restart with 5;
 		
 	end;
 $$;
