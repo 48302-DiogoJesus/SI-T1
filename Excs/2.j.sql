@@ -48,7 +48,3 @@ create or replace trigger add_to_list_alarme_and_registo
 instead of insert on list_all_alarmes
 for each row
 execute function add_alarme_and_registo();
-
--- TESTE
-
-insert into list_all_alarmes values('74-FT-18', 'Porsche Caipata', '-23.3233', '12.2382', '2016-06-22 19:10:25-03')

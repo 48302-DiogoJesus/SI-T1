@@ -270,7 +270,7 @@ $$
 						raise notice 'Teste %: List All Alarmes View: Resultado NOK', testCounter;
 			end;
 		end;
-		--2.j AQUI
+		--2.j
 		begin
 			begin
 				

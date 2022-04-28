@@ -66,7 +66,7 @@ $$
 			
 			primary key (matricula),
 			foreign key (estado_gps) references estados_gps(estado),
-			foreign key (id_cliente) references cliente(nif),
+			foreign key (id_cliente) references cliente(nif) on delete cascade,
 			foreign key (id_gps) references gps(id)
 		);
 	
@@ -132,8 +132,8 @@ $$
 			
 			primary key(id),
 			
-			foreign key (id_registo) references registo(id),
-			foreign key (id_veiculo) references veiculo(matricula)
+			foreign key (id_registo) references registo(id) on delete cascade,
+			foreign key (id_veiculo) references veiculo(matricula) on delete cascade
 		);
 	end;
 $$;
