@@ -18,8 +18,12 @@ $$
 		delete from cliente_institucional;
 		delete from cliente_particular;
 		
-		-- Only 'apagado' flag is set to TRUE
-		delete from cliente; 
+		-- Reseting to default. Users are never deleted. For that we would have to drop the trigger and then re-enable it
+		-- Double delete to remove the row
+			-- 1st sets apagado to true
+			-- 2nd if apagado = true then perform delete operation without calling the trigger function
+		delete from cliente;
+		delete from cliente;
 	
 		delete from gps;
 	

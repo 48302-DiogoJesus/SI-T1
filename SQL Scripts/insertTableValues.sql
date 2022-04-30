@@ -59,11 +59,6 @@ $$
 		insert into registo_n_proc values (6) on conflict do nothing;
 		insert into registo_n_proc values (7) on conflict do nothing;
 		
-		insert into alarme values(1, 1, '74-FT-18') on conflict do nothing;
-		insert into alarme values(2, 5, '74-FT-18') on conflict do nothing;
-		insert into alarme values(3, 3, 'JD-23-09') on conflict do nothing;
-		insert into alarme values(4, 5, 'RT-16-34') on conflict do nothing;
-		
 		alter sequence alarme_id_seq restart with 5;
 		
 	end;

@@ -110,8 +110,9 @@ $$
 				testCounter = testCounter + 1;
 				-- Reset Environment
 				call resetTestsEnvironment();
+				insert into alarme(id_registo, id_veiculo) values(2, '74-FT-18');
 				-- Action + Validate
-				if (select count(*) from count_alarmes_returns_table(2016)) = 3 then
+				if (select count(*) from count_alarmes_returns_table(2016)) = 1 then
 					testResult = 'OK';
 				else
 					testResult = 'NOK';
@@ -168,9 +169,27 @@ $$
 		end;
 		-- 2.g)
 		begin
-			-- Handle all invalid alarmes
+			-- Processed Registos trigger
 			begin
+				testCounter = testCounter + 1;
+				-- Reset Environment
+				call resetTestsEnvironment();
+				-- Action
+				-- Handle registos will insert into registo_n_proc triggering 2.j) trigger
+				call handle_registos();
+				if
+					(select count(*) from alarme) = 2
+				then
+					testResult = 'OK';
+				else
+					testResult = 'NOK';
+				end if;
+			
+				raise notice 'Teste %: Trigger valida registo processado %', testCounter, testResult;
 				
+			exception
+				when others then
+					raise notice 'Teste %: Trigger valida registo processado: Resultado NOK', testCounter;
 			end;
 		end;
 		-- 2.h)
@@ -256,7 +275,7 @@ $$
 				-- Action
 				call handle_registos();
 				if
-					(select count(*) from list_all_alarmes) = 6
+					(select count(*) from list_all_alarmes) = 2
 				then
 					testResult = 'OK';
 				else
@@ -272,8 +291,28 @@ $$
 		end;
 		--2.j
 		begin
+			-- INSERT into list_all_alarmes VIEW 
 			begin
+				testCounter = testCounter + 1;
+				-- Reset Environment
+				call resetTestsEnvironment();
+				-- Action
+				insert into list_all_alarmes values('03-83-AA', 'Juão Rinato', '00.2312', '00.0000', '2000-01-22 01:10:25-01');
+				if
+					(select count(*) from list_all_alarmes where matricula = '03-83-AA') = 1 and 
+					(select count(*) from registo where longitude = '00.0000' and latitude = '00.2312' and marca_temporal = '2000-01-22 01:10:25-01') = 1 and 
+					(select count(*) from alarme where id_veiculo = '03-83-AA') = 1
+				then
+					testResult = 'OK';
+				else
+					testResult = 'NOK';
+				end if;
+			
+				raise notice 'Teste %: INSERT in list_all_alarmes VIEW: Resultado %', testCounter, testResult;
 				
+				exception
+					when others then
+						raise notice 'Teste %: INSERT in list_all_alarmes VIEW: Resultado NOK', testCounter;
 			end;
 		end;
 		-- 2.k)

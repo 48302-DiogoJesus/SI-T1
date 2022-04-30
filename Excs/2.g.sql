@@ -11,22 +11,21 @@
  * false quando for impar;
  * */
 
-drop function if exists analise_registo;
+drop function if exists analise_registo cascade;
 
 create or replace function zonaVerdeValida(id_registo int)
 returns boolean
 language plpgsql
 as
 $$
-        
     begin
 	    if
-	    	mod((select latitude::decimal::int from registo where id = id_registo), 2) = 0
+	    	mod((select latitude::decimal::int from registo where id = id_registo), 2) = 0 -- If even then it's inside Zona Verde
 	    then 
 	        return true;
 	    end if;
 	   
-	        return false;    
+        return false;
     end;
 $$; 
 
@@ -37,16 +36,18 @@ as
 $$
     declare 
         veiculo_id char(8);
-        gps_id int;
     begin
-        select id_gps from registo where new.id_registo = registo.id into gps_id; 
-        select matricula from veiculo where veiculo.id_gps = gps_id into veiculo_id;
+        
+        select matricula from veiculo where veiculo.id_gps = (
+       		select id_gps from registo where new.id_registo = registo.id
+        ) into veiculo_id;
         if
-            not (
-	            zonaVerdeValida(new.id_registo) or
-	            (select count(id) from zona_verde where zona_verde.id_veiculo = veiculo_id) = 0 or
-	            (select estado_gps from veiculo where veiculo.matricula = veiculo_id) = 'PausaDeAlarmes'
-            )
+          	-- Existem zonas verdes para o veiculo
+	        (select count(id) from zona_verde where zona_verde.id_veiculo = veiculo_id) <> 0 and 
+            -- Equipamento não está em PausaDeAlarmes
+            (select estado_gps from veiculo where veiculo.matricula = veiculo_id) <> 'PausaDeAlarmes' and 
+        	-- Veiculo fora da zona verde
+            not zonaVerdeValida(new.id_registo) 
         then 
             insert into alarme(id_registo, id_veiculo) values(new.id_registo, veiculo_id);
         end if;

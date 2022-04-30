@@ -7,7 +7,7 @@
 
 -- TRIGGER FUNCTION --
 
-drop function if exists remove_client;
+drop function if exists remove_client cascade;
 
 create or replace function remove_client()
 returns trigger
