@@ -13,6 +13,9 @@
 
 drop function if exists analise_registo cascade;
 
+/*
+* Retorna TRUE caso o arredondamento da latitude seja um número par, FALSE se for ímpar
+*/
 create or replace function zonaVerdeValida(id_registo int)
 returns boolean
 language plpgsql
@@ -20,7 +23,7 @@ as
 $$
     begin
 	    if
-	    	mod((select latitude::decimal::int from registo where id = id_registo), 2) = 0 -- If even then it's inside Zona Verde
+	    	mod((select latitude::decimal::int from registo where id = id_registo), 2) = 0
 	    then 
 	        return true;
 	    end if;

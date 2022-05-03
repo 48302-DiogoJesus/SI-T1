@@ -16,11 +16,7 @@ as
 $$
 	begin
 		update cliente set apagado = true where nif = old.nif;
-		/* 
-		 * To avoid deletion 
-		 * If we returned OLD then the delete instruction would proceed 
-		 * and client could be removed. This way it does not execute it
-		 * */
+		-- Retornar NULL por forma a evitar que ação do trigger se complete
 		return null;
 	end;
 $$;

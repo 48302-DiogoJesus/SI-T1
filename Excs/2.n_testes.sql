@@ -7,8 +7,6 @@
  * Ou caso falhe: “teste 1: Inserir Cliente com dados bem passados: Resultado NOK
  * */
 
--- Drop all procedures, functions & triggers
-
 drop procedure if exists resetTestsEnvironment;
 
 create or replace procedure resetTestsEnvironment()
@@ -16,7 +14,6 @@ language plpgsql
 as 
 $$
 	begin
-		-- REMOVE PROCEDURE LATER
 		call removeTableValues();
 		call insertTableValues();
 	end;
@@ -30,7 +27,7 @@ as
 $$
 	declare 
 		testCounter int default 0;
-		testResult varchar(3); -- OK | NOK
+		testResult varchar(3); -- Can be: OK | NOK
 	begin
 		call resetTestsEnvironment();
 		-- 2.d)

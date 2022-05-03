@@ -32,6 +32,7 @@ $$
 $$ language plpgsql;
 
 /*
+-- Versão em que é retornado apenas o número de alarmes para cada veículo
 drop function count_alarmes;
 
 create or replace function count_alarmes(i_year int, i_veiculo char(8) default null)

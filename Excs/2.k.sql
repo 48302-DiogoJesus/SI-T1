@@ -18,10 +18,10 @@ $$
 		open ri_cursor;
 		
 		while true loop
-			-- go forward
+			-- Avançar o cursor uma posição
 			fetch from ri_cursor into current_ri_id_registo;
 			
-			-- No more table rows
+			-- Fim da tabela (não existem mais linhas)
 			if not found then
 				return;
 			end if;
@@ -38,11 +38,11 @@ $$
 				continue;
 			end if;
 			
-			-- More than 15 days have passed OR 'marca_temporal' is NULL
+			-- Passaram mais de 15 dias OU 'marca_temporal' = NULL
 				
-			-- Delete from 'Registo_Invalido'
+			-- Apagar da tabela 'Registo_Invalido'
 			delete from registo_invalido where current of ri_cursor;
-			-- Delete from 'Registo'
+			-- Apagar da tabela 'Registo'
 			delete from registo where id = current_ri_id_registo;
 		
 			continue;

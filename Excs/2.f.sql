@@ -19,8 +19,10 @@ $$
 		curr_latitude varchar(20);
 		curr_marca_temporal timestamp;
 	begin
-	-- to avoid the same query returning different values on different timings
-	
+		-- Possíveis problemas de concorrência:
+			--> não deve ser possível apagar o registo das tabelas 'registos' e 'registos_n_proc'
+			--  enquanto ele estiver a ser tratado (dentro do loop)
+			
 		for curr_registo_n_proc in (select id_registo from registo_n_proc) loop
 			-- Gather column values
 			select 
@@ -31,7 +33,7 @@ $$
 				registo
 			where registo.id = curr_registo_n_proc.id_registo;
 		
-			-- Choose where to transfer the 'registo'
+			-- Escolher para onde transferir o 'registo'
 			if
 				curr_longitude is null or
 				curr_latitude is null or
@@ -43,7 +45,7 @@ $$
 				insert into registo_proc(id_registo) values(curr_registo_n_proc.id_registo);
 			end if;
 		
-			-- Remove from non processed 'registos'
+			-- Remover o registo da tabela 'registos_n_proc'
 			delete from registo_n_proc where registo_n_proc.id_registo = curr_registo_n_proc.id_registo;
 			
 		end loop;
