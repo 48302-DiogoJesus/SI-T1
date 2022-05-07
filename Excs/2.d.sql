@@ -21,7 +21,7 @@ $$
 	begin
 	-- São possíveis situações de concorrência em que entre o primeiro insert e o segundo
 	-- o referenciador é apagado. Nessas situações o cliente que estamos a inserir fica com
-	-- referenciador = null, um estado permitido pela nosso sistema
+	-- referenciador = null, um estado permitido pelo nosso sistema, daí não colocar um lock sobre o registo com cliente nif = referenciador
 	
 	  insert into cliente(nif, referenciador, nome, morada, telefone) values(i_nif, i_ref_client, i_nome, i_morada, i_telefone);
 	  insert into cliente_particular (id_cliente, cc) values(i_nif, i_cc);
@@ -56,7 +56,7 @@ $$
 	  update cliente_particular set 
 	  cc = n_cc
 	  where id_cliente = i_nif;
-	
+	  
 	end;
 $$;
 
@@ -69,14 +69,14 @@ language plpgsql
 as
 $$
 	begin
-	-- Com este nível de isolamento garantimos que caso observemos que cliente particular existe 
-	-- quando o vamos apagar ele ainda existe dentro da transação
-	set transaction isolation level repeatable read;
-	
+		-- Ao utilizar o lock for share garantimos que o cliente selecionado não pode ser apagado até ao final da transação
+		
+		-- Caso não exista OU já tenha sido apagado não tentar de novo
 		if
-			(select count(*) from cliente_particular where id_cliente = i_nif) = 0 
+			not exists (select * from cliente_particular where id_cliente = i_nif for share) or
+			(select apagado from cliente where nif = i_nif for share)
 		then
-			raise exception 'Cliente Particular não encontrado!';
+			raise exception 'Cliente Particular não encontrado ou já foi apagado!';
 			return;
 		end if;
 		

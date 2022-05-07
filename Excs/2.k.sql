@@ -11,10 +11,15 @@ language plpgsql
 as
 $$
 	declare 
-		ri_cursor cursor for (select id_registo from registo_invalido);
+		-- SLock evita a remoção dos registo inválidos enquanto os estamos a tratar
+		ri_cursor cursor for (select id_registo from registo_invalido for share); 
 		current_ri_id_registo int;
 		current_ri_time date;
 	begin
+		-- Não existe qualquer proteção contra uma T2 remover o registo a ser tratado da tabela 'registo'
+		-- Os registos a remover da tabela 'registo_invalido' estão protegidos pelo Shared Lock
+		-- O nível de isolamento REPEATABLE READ seria suficiente para evitar este fenómeno
+		
 		open ri_cursor;
 		
 		while true loop
@@ -49,6 +54,5 @@ $$
 		end loop;
 	
 		close ri_cursor;
-		
 	end;
 $$;

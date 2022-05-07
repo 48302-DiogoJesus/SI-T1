@@ -19,26 +19,25 @@ $$
 		curr_latitude varchar(20);
 		curr_marca_temporal timestamp;
 	begin
-		-- Possíveis problemas de concorrência:
-			--> não deve ser possível apagar o registo das tabelas 'registos' e 'registos_n_proc'
-			--  enquanto ele estiver a ser tratado (dentro do loop)
-			
-		for curr_registo_n_proc in (select id_registo from registo_n_proc) loop
+		-- Lock for share para impedir a remoção enquanto o registo está a ser tratado no loop (from 'registo_n_proc')
+		for curr_registo_n_proc in (select id_registo from registo_n_proc for share) loop
 			-- Gather column values
-			select 
+			select
 				id_gps, longitude, latitude, marca_temporal
 				into
 				curr_id_gps, curr_longitude, curr_latitude, curr_marca_temporal
 			from
 				registo
-			where registo.id = curr_registo_n_proc.id_registo;
+			where registo.id = curr_registo_n_proc.id_registo for share; -- Para evitar remoção do registo a ser tratado (from 'registo')
 		
 			-- Escolher para onde transferir o 'registo'
 			if
 				curr_longitude is null or
 				curr_latitude is null or
 				curr_marca_temporal is null or
-				(select count(*) from gps where id = curr_id_gps) = 0
+				-- SLock -> Uma vez que não ter gps faz parte da condição então convêm que não seja possível ser removido antes
+				-- da inserção do registo nos registos inválidos 
+				not exists (select * from gps where id = curr_id_gps for share)
 			then
 				insert into registo_invalido(id_registo) values(curr_registo_n_proc.id_registo);
 			else
@@ -46,6 +45,7 @@ $$
 			end if;
 		
 			-- Remover o registo da tabela 'registos_n_proc'
+			-- SLock -> XLock
 			delete from registo_n_proc where registo_n_proc.id_registo = curr_registo_n_proc.id_registo;
 			
 		end loop;
